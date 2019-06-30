@@ -5,9 +5,11 @@
         <span>Vuetify</span>
         <span class="font-weight-light">MATERIAL DESIGN</span>
       </v-toolbar-title>
+      <v-spacer />
       <v-toolbar-title class="headline">
         <router-link to="/">Home</router-link>
         <router-link to="/About">About</router-link>
+        <router-link to="/Experiments">ExperimentGround</router-link>
       </v-toolbar-title>
       <v-spacer />
 
@@ -21,7 +23,9 @@
     </v-toolbar>
 
     <v-content>
-      <router-view />
+      <v-container>
+        <router-view />
+      </v-container>
     </v-content>
   </v-app>
 </template>
