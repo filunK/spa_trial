@@ -22,7 +22,7 @@
             </v-layout>
             <v-layout text-xs-right>
                 <v-flex xs12>
-                    <v-btn color="primary" :loading="buttonLoading" :disabled="!isLoginEnable"  @click="DoLogin">ログイン</v-btn>
+                    <v-btn color="primary" :loading="IsLoginButtonLoading" :disabled="!isLoginEnable"  @click="DoLogin">ログイン</v-btn>
                 </v-flex>
             </v-layout>
         </v-form>
@@ -30,9 +30,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
 import { Env } from '@/utils/Env';
 import {Rules} from '@/utils/Rules';
+
+import {UserModel} from '@/models/UserModel'
 
 @Component({
   components: {
@@ -40,11 +42,16 @@ import {Rules} from '@/utils/Rules';
 })
 export default class LoginComponent extends Vue {
 
+    @Prop({
+        type: Boolean,
+        required: false,
+        default: false,
+    })
+    public IsLoginButtonLoading: boolean | undefined;
+
     public loginUsername: string = '';
 
     public loginUserpassword: string = '';
-
-    public buttonLoading: boolean = false;
 
     public isLoginEnable: boolean = false;
 
@@ -56,29 +63,34 @@ export default class LoginComponent extends Vue {
     public LoginConponent() {
         this.loginUsername = '';
         this.loginUserpassword = '';
-        this.buttonLoading = false;
     }
 
     /**
      * DoLogin
      */
-    public DoLogin() {
+    @Emit("OnLoginExecute")
+    public DoLogin(): UserModel {
 
-        this.buttonLoading = true;
+        const user = new UserModel();
+        user.UserName = this.loginUsername;
+        user.Password = this.loginUserpassword;
+        return user;
 
-        const uriSet = {
-            baseUri : Env.Instance.ApiBaseUri,
-            apiVersion: Env.Instance.ApiVersionUri,
-            processUri: Env.Instance.LoginApiUri,
-        };
+    //     this.buttonLoading = true;
 
-        const uri = uriSet.baseUri + uriSet.apiVersion + uriSet.processUri;
+    //     const uriSet = {
+    //         baseUri : Env.Instance.ApiBaseUri,
+    //         apiVersion: Env.Instance.ApiVersionUri,
+    //         processUri: Env.Instance.LoginApiUri,
+    //     };
 
-        console.log(uri);
+    //     const uri = uriSet.baseUri + uriSet.apiVersion + uriSet.processUri;
 
-        setTimeout(() => {
-            this.buttonLoading = false;
-        }, 2000);
+    //     console.log(uri);
+
+    //     setTimeout(() => {
+    //         this.buttonLoading = false;
+    //     }, 2000);
     }
 
 }

@@ -80,7 +80,28 @@ export class Env {
      * @memberOf Env
      */
     public get LoginApiUri(): string {
-        return '/Login';
+        return '/authentication/login';
     }
 
+    /**
+     * ローカルストレージのキー情報
+     */
+    public get Storage(): IStorage {
+        return {
+            AccessTokenKey : 'A_TKN',
+            RefreshTokenKey : 'R_TKN',
+        };
+    }
+
+}
+
+
+/**
+ * ローカルストレージのキー情報
+ * @export
+ * @interface IStorage
+ */
+export interface IStorage {
+    AccessTokenKey: string;
+    RefreshTokenKey: string;
 }
