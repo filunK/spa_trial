@@ -61,6 +61,22 @@ export class Env {
         }
     }
 
+        /**
+     * 環境変数
+     * VUE_APP_DATASOURCE
+     *
+     * @readonly
+     * @type {string}
+     * @memberOf Env
+     */
+    public get DataSourceName(): string {
+        if (process.env.VUE_APP_DATASOURCE === undefined) {
+            return '';
+        } else {
+            return process.env.VUE_APP_DATASOURCE;
+        }
+    }
+
     /**
      * APIバージョン
      *
@@ -81,6 +97,16 @@ export class Env {
      */
     public get LoginApiUri(): string {
         return '/authentication/login';
+    }
+
+    /**
+     * 
+     * @readonly
+     * @type {string}
+     * @memberOf Env
+     */
+    public get LoginConfirmUri(): string {
+        return '/authentication/confirm';
     }
 
     /**

@@ -1,9 +1,9 @@
 export class LoginResponse {
-    public AccessToken: string;
-    public Refresh: string;
+    public token: string;
+    public refresh: string;
 
     constructor() {
-        this.AccessToken = "";
-        this.Refresh = "";
+        this.token = "";
+        this.refresh = "";
     }
 }

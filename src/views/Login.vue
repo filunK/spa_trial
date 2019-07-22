@@ -13,9 +13,13 @@ import { Component, Vue } from 'vue-property-decorator';
 import LoginComponent from '@/components/LoginComponent.vue';
 
 import {Auth} from '@/utils/Auth'
+import { Env } from '@/utils/Env';
 import {UserModel} from '@/models/UserModel';
 
 import {LoginRequest} from '@/models/apiModels/V1/LoginRequest';
+
+import {TokenStorage} from '@/dataAccess/tableModel/TokenStorage';
+import { DexieContext } from '@/dataAccess/DexieContext';
 
 @Component({
   components: {
@@ -26,7 +30,7 @@ export default class Login extends Vue {
 
     public isLoading:boolean = false;
 
-    public Login(user: UserModel) {
+    public async Login(user: UserModel) {
 
         this.isLoading = true;
 
@@ -35,19 +39,36 @@ export default class Login extends Vue {
         apimodel.UserName = user.UserName;
         apimodel.Password = user.Password;
 
+        try {
+            const tokens = await Auth.Login(apimodel);
+            console.log('login.vue -- API-OK');
 
-        Auth.Login(apimodel)
-        .then((tokens) => {
-            console.log('login.vue -- OK');
+            // tokenをIndexedDBに保存する。
+            const accessToken = new TokenStorage(Env.Instance.Storage.AccessTokenKey, tokens.token);
+            const refreshToken = new TokenStorage(Env.Instance.Storage.RefreshTokenKey, tokens.refresh);
 
-            console.log(tokens);
+            const db = new DexieContext();
+            try {
+                db.SaveTokens([
+                    accessToken,
+                    refreshToken,
+                ]);
+                console.log('login.vue -- SAVE OK');
 
+            } catch (error) {
+                console.log('login.vue -- SAVE NG');
+                
+            }
+
+        } catch (error) {
+            console.log('login.vue -- API NG');
+            console.log(error);
+            
+        } finally {
             this.isLoading = false;
-        })
-        .catch(() => {
-            console.log('login.vue -- NG');
-            this.isLoading = false;
-        });
+
+        }
+
     }
 }
 </script>
