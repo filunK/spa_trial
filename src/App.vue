@@ -6,7 +6,7 @@
       app 
       v-model="navigationAvailable"
       >
-        <v-list>
+        <v-list nav dense>
           <MenuItemComponent LinkTarget="/" LinkTitle="Home" IconName="home"/>
           <MenuItemComponent LinkTarget="/Login" LinkTitle="Login" IconName=""/>
           <MenuItemComponent LinkTarget="/Authorized" LinkTitle="Authorized" IconName=""/>
@@ -14,25 +14,29 @@
           <MenuItemComponent LinkTarget="/Experiments" LinkTitle="Experiments" IconName=""/>
         </v-list>
     </v-navigation-drawer>
-    <v-toolbar 
+    <v-app-bar 
       clipped-left
       fixed
       app
-      >
-      <v-toolbar-side-icon @click.stop="navigationAvailable = !navigationAvailable"/>
+    >
+      <v-app-bar-nav-icon @click.stop="navigationAvailable = !navigationAvailable" />
       <v-toolbar-title class="headline text-uppercase">
         <span>Vuetify</span>
         <span class="font-weight-light">MATERIAL DESIGN</span>
       </v-toolbar-title>
       <v-spacer />
-      <v-btn
+      <!-- <v-btn
         flat
+        href="https://github.com/vuetifyjs/vuetify/releases/latest"
+        target="_blank"
+      > -->
+      <v-btn
         href="https://github.com/vuetifyjs/vuetify/releases/latest"
         target="_blank"
       >
         <span class="mr-2">Latest Release</span>
       </v-btn>
-    </v-toolbar>
+    </v-app-bar >
 
     <v-content>
       <v-container>

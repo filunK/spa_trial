@@ -1,20 +1,21 @@
 <template>
-    <router-link :to="LinkTarget">
-        <v-list-tile>
-            <v-list-tile-action>
-                <v-icon>{{Icon}}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-                <v-list-tile-title>{{LinkTitle}}</v-list-tile-title>
-            </v-list-tile-content>
-        </v-list-tile>
-    </router-link>
+    <v-list-item>
+        <v-list-item-action>
+            <v-icon>{{Icon}}</v-icon>
+        </v-list-item-action>
+        <v-list-Item-content>
+            <v-list-item-title>
+                <router-link :to="LinkTarget">{{LinkTitle}}</router-link>
+            </v-list-item-title>
+        </v-list-Item-content>
+    </v-list-item>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Env } from '@/utils/Env';
 import {Rules} from '@/utils/Rules';
+import {IconResolver} from '@/utils/IconResolver';
 
 @Component({
   components: {
@@ -45,7 +46,8 @@ export default class MenuItemComponent extends Vue {
     }
 
     public get Icon(): string {
-        return this.IconName? this.IconName: 'web';
+        const resolvedIconName = this.IconName? this.IconName: 'application';
+        return IconResolver.MaterialDesignIconResolver(resolvedIconName);
     }
 
 }
