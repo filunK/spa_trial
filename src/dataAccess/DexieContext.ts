@@ -12,27 +12,27 @@ export class DexieContext extends Dexie {
         super(Env.Instance.DataSourceName);
 
         this.ConfigureTables();
-        
+
         this.TokenCollection = this.table(DatabaseDefinition.TokenCollection.CollectionName);
         this.TokenCollection.mapToClass(TokenStorage);
 
     }
 
-    public async SaveTokens(tokens: Array<ITokenStorage>): Promise<void> {
-        await this.transaction('rw',this.TokenCollection, async () => {
+    public async SaveTokens(tokens: ITokenStorage[]): Promise<void> {
+        await this.transaction('rw', this.TokenCollection, async () => {
 
             this.TokenCollection.bulkPut(tokens);
         });
     }
 
-    public async GetTokens(tokenId: string): Promise<string | undefined>{
+    public async GetTokens(tokenId: string): Promise<string | undefined> {
         const token = await this.TokenCollection.get(tokenId);
         if (token) {
             return token.Value;
         } else {
             return undefined;
         }
-        
+
     }
 
     private ConfigureTables(): void {

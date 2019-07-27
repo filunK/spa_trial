@@ -10,7 +10,7 @@ export class DatabaseDefinition {
      * TokenCollection
      * @readonly
      * @static
-     * 
+     *
      * @memberOf DatabaseDefinition
      */
     public static get TokenCollection() {
