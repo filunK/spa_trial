@@ -1,8 +1,8 @@
-import Axios, { AxiosRequestConfig } from "axios";
+import Axios, { AxiosRequestConfig } from 'axios';
 
-import {LoginRequest} from "@/models/apiModels/V1/LoginRequest";
-import {LoginResponse} from "@/models/apiModels/V1/LoginResponse";
-import {Env} from "@/utils/Env";
+import {LoginRequest} from '@/models/apiModels/V1/LoginRequest';
+import {LoginResponse} from '@/models/apiModels/V1/LoginResponse';
+import {Env} from '@/utils/Env';
 import { DexieContext } from '@/dataAccess/DexieContext';
 
 export class Auth {
@@ -10,9 +10,9 @@ export class Auth {
     /**
      * ログインAPIを呼び出します。
      * @static
-     * @param {LoginRequest} model 
-     * @returns {Promise<LoginResponse>} 
-     * 
+     * @param {LoginRequest} model
+     * @returns {Promise<LoginResponse>}
+     *
      * @memberOf Auth
      */
     public static async Login(model: LoginRequest): Promise<LoginResponse> {
@@ -21,7 +21,7 @@ export class Auth {
         const loginApi = Env.Instance.ApiBaseUri + Env.Instance.ApiVersionUri + Env.Instance.LoginApiUri;
 
         try {
-            const response = await Axios.post<LoginResponse>(loginApi,model);
+            const response = await Axios.post<LoginResponse>(loginApi, model);
 
             return response.data;
         } catch (error) {
@@ -33,18 +33,18 @@ export class Auth {
     /**
      * ログイン確認APIを呼び出します。
      * @static
-     * @returns {Promise<boolean>} 
-     * 
+     * @returns {Promise<boolean>}
+     *
      * @memberOf Auth
      */
     public static async IsLoggedIn(): Promise<boolean> {
 
         const confirmApi = Env.Instance.ApiBaseUri + Env.Instance.ApiVersionUri + Env.Instance.LoginConfirmUri;
 
-        try{
+        try {
             const header = await Auth.CreateBearerHeader();
             console.log(header);
-            const response = await Axios.get(confirmApi, header)
+            const response = await Axios.get(confirmApi, header);
 
             if (response.status === 200) {
                 return true;
@@ -52,8 +52,10 @@ export class Auth {
                 return false;
             }
 
-        }catch (error) {
+        } catch (error) {
             // 401などのエラー
+
+            // TODO リフレッシュ処理の実装
             return false;
         }
 
@@ -63,8 +65,8 @@ export class Auth {
      * ヘッダに対してJWTを付与します。
      * @private
      * @static
-     * @returns {Promise<AxiosRequestConfig>} 
-     * 
+     * @returns {Promise<AxiosRequestConfig>}
+     *
      * @memberOf Auth
      */
     private static async CreateBearerHeader(): Promise<AxiosRequestConfig> {
@@ -75,9 +77,9 @@ export class Auth {
 
         return {
             headers: {
-                Authorization: `Bearer ${token? token: ''}`
-            }
-        }
+                Authorization: `Bearer ${token ? token : ''}`,
+            },
+        };
 
     }
 }

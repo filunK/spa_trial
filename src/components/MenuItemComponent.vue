@@ -25,28 +25,28 @@ export default class MenuItemComponent extends Vue {
 
     @Prop({
         type: String,
-        required: true
+        required: true,
     })
     public LinkTarget: string | undefined;
 
     @Prop({
         type: String,
-        required: true
+        required: true,
     })
     public LinkTitle: string | undefined;
 
     @Prop({
         type: String,
-        required: false
+        required: false,
     })
     public IconName: string | undefined;
 
     public get IsIconNameAvailable(): boolean {
-        return this.IconName? true: false;
+        return this.IconName ? true : false;
     }
 
     public get Icon(): string {
-        const resolvedIconName = this.IconName? this.IconName: 'application';
+        const resolvedIconName = this.IconName ? this.IconName : 'application';
         return IconResolver.MaterialDesignIconResolver(resolvedIconName);
     }
 

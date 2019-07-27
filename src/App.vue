@@ -54,7 +54,7 @@ import MenuItemComponent from '@/components/MenuItemComponent.vue';
 @Component({
   components: {
     MenuItemComponent,
-  }
+  },
 })
 export default class App extends Vue {
 

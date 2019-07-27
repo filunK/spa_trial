@@ -10,7 +10,7 @@
 export class Env {
 
     private static env: Env;
-    private Env() {}
+    private constructor() {}
 
     /**
      * シングルトンインスタンスを取得
@@ -61,7 +61,7 @@ export class Env {
         }
     }
 
-        /**
+    /**
      * 環境変数
      * VUE_APP_DATASOURCE
      *
@@ -100,7 +100,7 @@ export class Env {
     }
 
     /**
-     * 
+     *
      * @readonly
      * @type {string}
      * @memberOf Env

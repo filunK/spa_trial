@@ -34,7 +34,7 @@ import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
 import { Env } from '@/utils/Env';
 import {Rules} from '@/utils/Rules';
 
-import {UserModel} from '@/models/UserModel'
+import {UserModel} from '@/models/UserModel';
 
 @Component({
   components: {
@@ -68,29 +68,13 @@ export default class LoginComponent extends Vue {
     /**
      * DoLogin
      */
-    @Emit("OnLoginExecute")
+    @Emit('OnLoginExecute')
     public DoLogin(): UserModel {
 
         const user = new UserModel();
         user.UserName = this.loginUsername;
         user.Password = this.loginUserpassword;
         return user;
-
-    //     this.buttonLoading = true;
-
-    //     const uriSet = {
-    //         baseUri : Env.Instance.ApiBaseUri,
-    //         apiVersion: Env.Instance.ApiVersionUri,
-    //         processUri: Env.Instance.LoginApiUri,
-    //     };
-
-    //     const uri = uriSet.baseUri + uriSet.apiVersion + uriSet.processUri;
-
-    //     console.log(uri);
-
-    //     setTimeout(() => {
-    //         this.buttonLoading = false;
-    //     }, 2000);
     }
 
 }

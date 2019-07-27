@@ -4,7 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
-  mode: "hash",
+  mode: 'hash',
   routes: [
     {
       path: '/',
@@ -13,7 +13,7 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ '@/views/Home.vue'),
       meta: {
         isPublic: true,
-      }
+      },
     },
     {
       path: '/about',
@@ -29,7 +29,7 @@ export default new Router({
       component: () => import(/* webpackChunkName: "experiments" */ '@/views/ExperimentGround.vue'),
       meta: {
         isPublic: true,
-      }
+      },
     },
     {
       path: '/Login',
@@ -37,7 +37,7 @@ export default new Router({
       component: () => import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
       meta: {
         isPublic: true,
-      }
+      },
     },
     {
       path: '/Authorized',
@@ -45,7 +45,7 @@ export default new Router({
       component: () => import(/* webpackChunkName: "authorized" */ '@/views/Authorized.vue'),
       meta: {
         isPublic: false,
-      }
+      },
     },
   ],
 });

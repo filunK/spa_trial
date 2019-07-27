@@ -3,7 +3,7 @@ export class LoginResponse {
     public refresh: string;
 
     constructor() {
-        this.token = "";
-        this.refresh = "";
+        this.token = '';
+        this.refresh = '';
     }
 }

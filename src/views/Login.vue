@@ -12,7 +12,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import LoginComponent from '@/components/LoginComponent.vue';
 
-import {Auth} from '@/utils/Auth'
+import {Auth} from '@/utils/Auth';
 import { Env } from '@/utils/Env';
 import {UserModel} from '@/models/UserModel';
 
@@ -28,14 +28,14 @@ import { DexieContext } from '@/dataAccess/DexieContext';
 })
 export default class Login extends Vue {
 
-    public isLoading:boolean = false;
+    public isLoading: boolean = false;
 
     public async Login(user: UserModel) {
 
         this.isLoading = true;
 
         // アプリ内モデルをAPI向けモデルに変換
-        let apimodel = new LoginRequest();
+        const apimodel = new LoginRequest();
         apimodel.UserName = user.UserName;
         apimodel.Password = user.Password;
 
@@ -57,13 +57,13 @@ export default class Login extends Vue {
 
             } catch (error) {
                 console.log('login.vue -- SAVE NG');
-                
+
             }
 
         } catch (error) {
             console.log('login.vue -- API NG');
             console.log(error);
-            
+
         } finally {
             this.isLoading = false;
 
