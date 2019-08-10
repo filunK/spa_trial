@@ -20,9 +20,9 @@
                     ></v-text-field>
                 </v-flex>
             </v-layout>
-            <v-layout text-xs-right>
+            <v-layout text-right>
                 <v-flex xs12>
-                    <v-btn color="primary" :loading="IsLoginButtonLoading" :disabled="!isLoginEnable"  @click="DoLogin">ログイン</v-btn>
+                    <v-btn color="primary" :loading="IsLoginButtonLoading" :disabled="!ButtonState"  @click="DoLogin">ログイン</v-btn>
                 </v-flex>
             </v-layout>
         </v-form>
@@ -47,7 +47,14 @@ export default class LoginComponent extends Vue {
         required: false,
         default: false,
     })
-    public IsLoginButtonLoading: boolean | undefined;
+    public IsLoginButtonLoading?: boolean;
+
+    @Prop({
+        type: Boolean,
+        required: false,
+        default: true,
+    })
+    public IsButtonEnable?: boolean;
 
     public loginUsername: string = '';
 
@@ -59,6 +66,15 @@ export default class LoginComponent extends Vue {
         username: Rules.UsernameRule,
         password: Rules.PasswordRule,
     };
+
+
+    public get ButtonState(): boolean {
+        if (this.isLoginEnable && this.IsButtonEnable) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public LoginConponent() {
         this.loginUsername = '';
