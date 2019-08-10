@@ -19,4 +19,18 @@ export class DatabaseDefinition {
             TableDefinition: 'Id, Value',
         };
     }
+
+    /**
+     * UserInfoCollection
+     * @readonly
+     * @static
+     *
+     * @memberOf DatabaseDefinition
+     */
+    public static get UserInfoCollection() {
+        return {
+            CollectionName: 'UserInfoCollection',
+            TableDefinition: 'UserId, IsLoggedIn',
+        };
+    }
 }

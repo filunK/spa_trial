@@ -109,6 +109,10 @@ export class Env {
         return '/authentication/confirm';
     }
 
+    public get RefreshUri(): string {
+        return '/authentication/refresh';
+    }
+
     /**
      * ローカルストレージのキー情報
      */
@@ -116,6 +120,13 @@ export class Env {
         return {
             AccessTokenKey : 'A_TKN',
             RefreshTokenKey : 'R_TKN',
+        };
+    }
+
+
+    public get QueryStringKies(): IQueryStringKies {
+        return {
+            RedirectTo: 'redirect',
         };
     }
 
@@ -130,4 +141,8 @@ export class Env {
 export interface IStorage {
     AccessTokenKey: string;
     RefreshTokenKey: string;
+}
+
+export interface IQueryStringKies {
+    RedirectTo: string;
 }

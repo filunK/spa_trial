@@ -4,6 +4,9 @@ import {LoginRequest} from '@/models/apiModels/V1/LoginRequest';
 import {LoginResponse} from '@/models/apiModels/V1/LoginResponse';
 import {Env} from '@/utils/Env';
 import { DexieContext } from '@/dataAccess/DexieContext';
+import { IAxiousHttpError } from '@/exceptions/IAxiousHttpError';
+import { RefreshRequest } from '@/models/apiModels/V1/RefreshRequest';
+import { TokenStorage } from '@/dataAccess/tableModel/TokenStorage';
 
 export class Auth {
 
@@ -41,24 +44,103 @@ export class Auth {
 
         const confirmApi = Env.Instance.ApiBaseUri + Env.Instance.ApiVersionUri + Env.Instance.LoginConfirmUri;
 
+        const db = new DexieContext();
+        let judge: boolean = false;
         try {
+            const userInfo = await db.GetUserInfo();
             const header = await Auth.CreateBearerHeader();
-            console.log(header);
             const response = await Axios.get(confirmApi, header);
 
             if (response.status === 200) {
-                return true;
+                console.log('IsLoggedIn: OK- ConfirmAPI-200');
+                judge = true;
             } else {
-                return false;
+                console.log('IsLoggedIn: NO- ConfirmAPI-2xx');
+                judge = false;
             }
 
         } catch (error) {
-            // 401などのエラー
+            const axiousError = error as IAxiousHttpError;
+            // 401以外は認証失敗とみなす
+            if (axiousError.response) {
+                if (axiousError.response.status !== 401) {
+                    console.log('IsLoggedIn: NO- ConfirmAPI- 40X');
+                    judge = false;
+                }
+                // 401である場合はリフレッシュトークン取得
+                console.log('IsLoggedIn: PROCESSED- ConfirmAPI- 401');
 
-            // TODO リフレッシュ処理の実装
-            return false;
+                // IndexedDBから情報を取得する。
+                try {
+                    const token = await db.GetTokens(Env.Instance.Storage.RefreshTokenKey);
+
+                    const model = new RefreshRequest();
+                    if (token) {
+                        model.RefreshToken = token;
+                    }
+
+                    // API呼び出し
+                    const refreshApi = Env.Instance.ApiBaseUri + Env.Instance.ApiVersionUri + Env.Instance.RefreshUri;
+                    try {
+                        const response = await Axios.put<LoginResponse>(refreshApi, model);
+
+                        const accessToken = new TokenStorage(
+                            Env.Instance.Storage.AccessTokenKey,
+                            response.data.token,
+                        );
+                        const refreshToken = new TokenStorage(
+                            Env.Instance.Storage.RefreshTokenKey,
+                            response.data.refresh,
+                        );
+
+                        try {
+                            db.SaveTokens([
+                                accessToken,
+                                refreshToken,
+                            ]);
+                            console.log('IsLoggedIn: OK- SAVE REFRESH');
+
+                            judge = true;
+                        } catch (error) {
+                            console.log('IsLoggedIn: NO- SAVE REFRESH');
+                            console.error(error);
+                            judge = false;
+                        }
+
+                    } catch (error) {
+                        console.log('IsLoggedIn: NO- RefreshAPI- not 200');
+                        judge = false;
+                    }
+
+                } catch (error) {
+                    console.log('IsLoggedIn: NO- Get Tokens');
+                    judge = false;
+                }
+
+            } else {
+                console.log('IsLoggedIn: NO- Error Instanse doest not have  response property');
+                judge = false;
+
+            }
         }
 
+        // ログイン状態をほかから参照できるようUserInfoCollectionを更新する。
+        try {
+            const userInfo = await db.GetUserInfo();
+            if (userInfo) {
+                userInfo.IsLoggedIn = judge;
+                await db.SaveUserInfo(userInfo);
+            } else {
+                await db.SaveUserInfo({
+                    UserId: '',
+                    IsLoggedIn: judge,
+                });
+            }
+        } catch (error) {
+            judge = false;
+        }
+
+        return judge;
     }
 
     /**

@@ -1,8 +1,13 @@
 <template>
     <v-container>
+        <v-layout justify-center v-if="isLoggedIn">
+            <v-flex xs10 sm8 md6 lg4>
+                <p headline font-weight-light >{{loginUserName}}としてログインしています。</p>
+            </v-flex>
+        </v-layout>
         <v-layout justify-center>
-            <v-flex xs12 xl4>
-                <LoginComponent @OnLoginExecute="Login" :IsLoginButtonLoading="isLoading"/>
+            <v-flex xs10 sm8 md6 lg4>
+                <LoginComponent @OnLoginExecute="Login" :IsLoginButtonLoading="isLoading" :IsButtonEnable="!isLoggedIn"/>
             </v-flex>
         </v-layout>
     </v-container>
@@ -30,6 +35,29 @@ export default class Login extends Vue {
 
     public isLoading: boolean = false;
 
+    public loginUserName: string = '';
+
+    public isLoggedIn: boolean = false;
+
+
+    public async created() {
+
+        try {
+            const db = new DexieContext();
+            const userInfo = await db.GetUserInfo();
+
+            if (userInfo && userInfo.IsLoggedIn && userInfo.UserId) {
+                this.isLoggedIn = userInfo.IsLoggedIn;
+                this.loginUserName = userInfo.UserId;
+            }
+
+        } catch (error) {
+            this.isLoggedIn = false;
+
+        }
+
+    }
+
     public async Login(user: UserModel) {
 
         this.isLoading = true;
@@ -53,13 +81,26 @@ export default class Login extends Vue {
                     accessToken,
                     refreshToken,
                 ]);
+
+                db.SaveUserInfo({
+                    UserId: user.UserName,
+                    IsLoggedIn: true,
+                });
                 console.log('login.vue -- SAVE OK');
+
+                // ログイン処理後のリダイレクト
+                const redirectTo = this.$route.query[Env.Instance.QueryStringKies.RedirectTo];
+
+                if (redirectTo) {
+                    this.$router.push({path: redirectTo as string});
+                } else {
+                    this.$router.push({path: '/'});
+                }
 
             } catch (error) {
                 console.log('login.vue -- SAVE NG');
 
             }
-
         } catch (error) {
             console.log('login.vue -- API NG');
             console.log(error);

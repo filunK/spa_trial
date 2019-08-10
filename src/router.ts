@@ -1,9 +1,12 @@
 import Vue from 'vue';
-import Router from 'vue-router';
+import Router, { RouteRecord } from 'vue-router';
+
+import { IVueRouteMetaInfo } from '@/models/IVueRouteMetaInfo';
+import { Auth } from '@/utils/Auth';
 
 Vue.use(Router);
 
-export default new Router({
+const router =  new Router({
   mode: 'hash',
   routes: [
     {
@@ -12,7 +15,7 @@ export default new Router({
       // component: Home,
       component: () => import(/* webpackChunkName: "about" */ '@/views/Home.vue'),
       meta: {
-        isPublic: true,
+        IsPublic: true,
       },
     },
     {
@@ -22,13 +25,16 @@ export default new Router({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ '@/views/About.vue'),
+      meta: {
+        IsPublic: true,
+      },
     },
     {
       path: '/Experiments',
       name: 'Experiments',
       component: () => import(/* webpackChunkName: "experiments" */ '@/views/ExperimentGround.vue'),
       meta: {
-        isPublic: true,
+        IsPublic: true,
       },
     },
     {
@@ -36,7 +42,7 @@ export default new Router({
       name: 'Login',
       component: () => import(/* webpackChunkName: "login" */ '@/views/Login.vue'),
       meta: {
-        isPublic: true,
+        IsPublic: true,
       },
     },
     {
@@ -49,3 +55,33 @@ export default new Router({
     },
   ],
 });
+
+router.beforeEach(async (to, from, next) => {
+  const loginStatus = await Auth.IsLoggedIn();
+
+  const callbackFunc: (val: RouteRecord, index: number, array: RouteRecord[]) => unknown = (record: RouteRecord) => {
+
+    if (record.meta) {
+      const metadata = record.meta as IVueRouteMetaInfo;
+
+      if (metadata.IsPublic) {
+        return false;
+      } else {
+        return !loginStatus;
+      }
+    } else {
+      return false;
+    }
+  };
+
+  if (to.matched.some(callbackFunc)) {
+    console.log('REQUIRE REDIRECT: ' + to.fullPath);
+    next({ path: '/login', query: { redirect: to.fullPath }});
+  } else {
+    console.log('REGULAR REDIRECT: ' + to.fullPath);
+    next();
+  }
+});
+
+
+export default router;
