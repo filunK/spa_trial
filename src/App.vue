@@ -8,6 +8,7 @@
       >
         <v-list nav dense>
           <MenuItemComponent LinkTarget="/" LinkTitle="Home" IconName="home"/>
+          <MenuItemComponent LinkTarget="/RegistUser" LinkTitle="ユーザ登録" IconName=""/>
           <MenuItemComponent LinkTarget="/Login" LinkTitle="Login" IconName=""/>
           <MenuItemComponent LinkTarget="/Authorized" LinkTitle="Authorized" IconName=""/>
           <MenuItemComponent LinkTarget="/About" LinkTitle="About" IconName=""/>
@@ -48,8 +49,10 @@
 
 <script lang = "ts">
 import {Vue, Component} from 'vue-property-decorator';
+import Clipboard from 'clipboard';
 import HelloWorld from '@/components/HelloWorld.vue';
 import MenuItemComponent from '@/components/MenuItemComponent.vue';
+import { Env } from '@/utils/Env';
 
 @Component({
   components: {
@@ -58,6 +61,20 @@ import MenuItemComponent from '@/components/MenuItemComponent.vue';
 })
 export default class App extends Vue {
 
+  public clipboard: Clipboard = new Clipboard(Env.Instance.ClipboardableClassName);
+
+
   private navigationAvailable: boolean = false;
+
+    public mounted() {
+        this.clipboard.on('success', (e) => {
+          alert('コピーしました。');
+          e.clearSelection();
+        });
+        this.clipboard.on('error', (e) => {
+          alert( 'コピーに失敗しました。' ) ;
+        });
+    }
+
 }
 </script>

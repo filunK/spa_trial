@@ -46,6 +46,14 @@ const router =  new Router({
       },
     },
     {
+      path: '/RegistUser',
+      name: 'RegistUser',
+      component: () => import(/* webpackChunkName: "registUser" */ '@/views/RegistUser.vue'),
+      meta: {
+        IsPublic: true,
+      },
+    },
+    {
       path: '/Authorized',
       name: 'Authorized',
       component: () => import(/* webpackChunkName: "authorized" */ '@/views/Authorized.vue'),
