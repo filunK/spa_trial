@@ -109,8 +109,24 @@ export class Env {
         return '/authentication/confirm';
     }
 
+    /**
+     *
+     * @readonly
+     * @type {string}
+     * @memberOf Env
+     */
     public get RefreshUri(): string {
         return '/authentication/refresh';
+    }
+
+    /**
+     *
+     * @readonly
+     * @type {string}
+     * @memberOf Env
+     */
+    public get RegistUserUri(): string {
+        return '/authentication/registration';
     }
 
     /**
@@ -128,6 +144,16 @@ export class Env {
         return {
             RedirectTo: 'redirect',
         };
+    }
+
+    /**
+     * クリップボード操作可能要素のクラス名
+     * @readonly
+     * @type {string}
+     * @memberOf Env
+     */
+    public get ClipboardableClassName(): string{
+        return '.clipboardable';
     }
 
 }

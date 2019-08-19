@@ -2,10 +2,13 @@ import Axios, { AxiosRequestConfig } from 'axios';
 
 import {LoginRequest} from '@/models/apiModels/V1/LoginRequest';
 import {LoginResponse} from '@/models/apiModels/V1/LoginResponse';
+import { RefreshRequest } from '@/models/apiModels/V1/RefreshRequest';
+import {RegistRequest} from '@/models/apiModels/V1/RegistRequest';
+import {RegistResponse} from '@/models/apiModels/V1/RegistResponse';
+
 import {Env} from '@/utils/Env';
 import { DexieContext } from '@/dataAccess/DexieContext';
 import { IAxiousHttpError } from '@/exceptions/IAxiousHttpError';
-import { RefreshRequest } from '@/models/apiModels/V1/RefreshRequest';
 import { TokenStorage } from '@/dataAccess/tableModel/TokenStorage';
 
 export class Auth {
@@ -141,6 +144,25 @@ export class Auth {
         }
 
         return judge;
+    }
+
+    /**
+     * ユーザ登録APIを実行します。
+     * @param model
+     */
+    public static async Regist(model: RegistRequest): Promise<RegistResponse> {
+
+        const registUri = Env.Instance.ApiBaseUri + Env.Instance.ApiVersionUri + Env.Instance.RegistUserUri;
+
+        try {
+            const response = await Axios.post<RegistResponse>(registUri, model);
+
+            return response.data;
+        } catch (error) {
+
+            throw error;
+        }
+
     }
 
     /**

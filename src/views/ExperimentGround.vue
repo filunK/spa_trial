@@ -7,7 +7,7 @@
         </v-layout>
         <v-layout justify-center>
             <v-flex xs6>
-                <LoginComponent />
+                <RegistUserComponent />
             </v-flex>
         </v-layout>
     </v-container>
@@ -17,11 +17,13 @@
 import { Vue, Component } from 'vue-property-decorator';
 import HelloWorld from '@/components/HelloWorld.vue';
 import LoginComponent from '@/components/LoginComponent.vue';
+import RegistUserComponent from '@/components/RegistUserComponent.vue';
 
 @Component({
   components: {
     HelloWorld,
     LoginComponent,
+    RegistUserComponent,
   },
 })
 export default class ExperimentGround extends Vue {}
