@@ -89,7 +89,7 @@ export class Env {
     }
 
     /**
-     * API ログイン系
+     * API ログイン
      *
      * @readonly
      * @type {string}
@@ -100,6 +100,7 @@ export class Env {
     }
 
     /**
+     * API ログイン確認
      *
      * @readonly
      * @type {string}
@@ -110,6 +111,7 @@ export class Env {
     }
 
     /**
+     * API リフレッシュトークン取得
      *
      * @readonly
      * @type {string}
@@ -120,6 +122,7 @@ export class Env {
     }
 
     /**
+     * API ユーザ登録
      *
      * @readonly
      * @type {string}
@@ -127,6 +130,10 @@ export class Env {
      */
     public get RegistUserUri(): string {
         return '/authentication/registration';
+    }
+
+    public get SearchBookUri(): string {
+        return '/book/googleBook';
     }
 
     /**
