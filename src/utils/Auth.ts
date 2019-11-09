@@ -167,13 +167,12 @@ export class Auth {
 
     /**
      * ヘッダに対してJWTを付与します。
-     * @private
      * @static
      * @returns {Promise<AxiosRequestConfig>}
      *
      * @memberOf Auth
      */
-    private static async CreateBearerHeader(): Promise<AxiosRequestConfig> {
+    public static async CreateBearerHeader(): Promise<AxiosRequestConfig> {
 
         const db = new DexieContext();
 

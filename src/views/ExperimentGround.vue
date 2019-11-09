@@ -7,9 +7,10 @@
             </v-flex>
         </v-layout>
         <v-layout justify-center>
-            <v-flex xs6>
+            <v-flex xs10>
                 <!-- <RegistUserComponent /> -->
-                <BookInfoEditComponent CardTitle="aaaaa"/>
+                <!-- <BookInfoEditComponent CardTitle="aaaaa"/> -->
+                <BookTableComponent />
             </v-flex>
         </v-layout>
     </v-container>
@@ -21,6 +22,7 @@ import HelloWorld from '@/components/HelloWorld.vue';
 import LoginComponent from '@/components/LoginComponent.vue';
 import RegistUserComponent from '@/components/RegistUserComponent.vue';
 import BookInfoEditComponent from '@/components/BookInfoEditComponent.vue';
+import BookTableComponent from '@/components/BookTableComponent.vue';
 
 @Component({
   components: {
@@ -28,6 +30,7 @@ import BookInfoEditComponent from '@/components/BookInfoEditComponent.vue';
     LoginComponent,
     RegistUserComponent,
     BookInfoEditComponent,
+    BookTableComponent,
   },
 })
 export default class ExperimentGround extends Vue {}

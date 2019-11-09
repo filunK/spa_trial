@@ -2,6 +2,8 @@ import Axios, { AxiosRequestConfig } from 'axios';
 
 import {Env} from '@/utils/Env';
 import { BookResponseEntity } from '@/models/apiModels/V1/BookResponseEntity';
+import { IAxiousHttpError } from '@/exceptions/IAxiousHttpError';
+import { Auth } from '@/utils/Auth';
 
 
 export class Book {
@@ -33,6 +35,25 @@ export class Book {
 
             return response.data;
         } catch (error) {
+            throw error;
+        }
+
+    }
+
+    public static async GetBooks(): Promise<BookResponseEntity[]> {
+
+        // 書籍情報取得APIのURI
+        const booksApi = Env.Instance.ApiBaseUri + Env.Instance.ApiVersionUri + Env.Instance.GetBooksUri;
+        const header = await Auth.CreateBearerHeader();
+
+        try {
+            const response = await Axios.get<BookResponseEntity[]>(booksApi, header);
+
+            console.log(response);
+
+            return response.data;
+        } catch (error) {
+
             throw error;
         }
 

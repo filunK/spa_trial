@@ -132,6 +132,19 @@ export class Env {
         return '/authentication/registration';
     }
 
+    /**
+     * API 書籍情報取得
+     * @readonly
+     * @type {string}
+     * @memberOf Env
+     */
+    public get GetBooksUri(): string {
+        return '/book';
+    }
+
+    /**
+     * Google API 書籍情報検索
+     */
     public get SearchBookUri(): string {
         return '/book/googleBook';
     }

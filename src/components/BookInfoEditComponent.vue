@@ -7,19 +7,19 @@
     <v-card-text>
         <v-row>
           <v-col cols="10" md="10" sm="12">
-            <v-text-field v-model="Isbn" label="ISBN番号" placeholder="ハイフン抜きの数値を入力してください。" :rules="[Rules.Isbn]" maxlength="13" @input="IsSearchButtonEnable" />
+            <v-text-field v-model="ComponentIsbn" label="ISBN番号" placeholder="ハイフン抜きの数値を入力してください。" :rules="[Rules.Isbn]" maxlength="13" @input="IsSearchButtonEnable" />
           </v-col>
           <v-col cols="2" md="2" sm="12">
             <v-btn color="primary" :loading="IsGetBookInfoButtonLoading" :disabled="!BookInfoButtonState"  @click="GetBookInfo">検索</v-btn>
           </v-col>
           <v-col cols="12" md="12" sm="12">
-            <v-text-field v-model="Title" label="タイトル" />
+            <v-text-field v-model="ComponentTitle" label="タイトル" />
           </v-col>
           <v-col cols="9" md="9" sm="12">
             <v-text-field v-model="Author" label="著者" />
           </v-col>
           <v-col cols="3" md="3" sm="12">
-            <v-text-field v-model="PageCount" label="ページ数" :rules="[Rules.PageCount]" />
+            <v-text-field v-model="ComponentPageCount" label="ページ数" :rules="[Rules.PageCount]" />
           </v-col>
           <v-col cols="5" md="6" sm="12">
             <v-menu
@@ -31,18 +31,18 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  v-model="PurchaseDateString"
+                  v-model="ComponentPurchaseDateString"
                   label="日付"
                   prepend-icon="mdi-calendar"
                   readonly
                   v-on="on"
                 ></v-text-field>
               </template>
-              <v-date-picker v-model="PurchaseDateString" @input="IsDatetimePickerEnable = false"></v-date-picker>
+              <v-date-picker v-model="ComponentPurchaseDateString" @input="IsDatetimePickerEnable = false"></v-date-picker>
             </v-menu>
           </v-col>
           <v-col cols="12" md="12" sm="12">
-            <v-textarea v-model="Comment" label="コメント・感想" row-height="5" />
+            <v-textarea v-model="ComponentComment" label="コメント・感想" row-height="5" />
           </v-col>
         </v-row>
       </v-card-text>
@@ -62,12 +62,14 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
+import moment from 'moment';
 import { Env } from '@/utils/Env';
 import { Rules } from '@/utils/Rules';
 import { Book } from '@/utils/Book';
 import { IAxiousHttpError } from '@/exceptions/IAxiousHttpError';
 
 import {BookModel} from '@/models/BookModel';
+import {DialogMode} from '@/models/DialogMode';
 
 @Component({
   components: {
@@ -81,13 +83,57 @@ export default class BookEditComponent extends Vue {
       required: true,
   })
   public CardTitle?: string;
-  public Isbn: string = '';
-  public Title: string = '';
-  public Author: string = '';
-  public PageCount: number = 0;
-  public PurchaseDateString: string = '';
-  public Comment: string = '';
 
+  @Prop({
+      type: String,
+      required: true,
+      validator: (val: string) => val === DialogMode.New || val === DialogMode.Update,
+  })
+  public DialogMode?: DialogMode;
+
+  @Prop({
+    type: String,
+    required: false,
+  })
+  public Isbn?: string;
+
+  @Prop({
+    type: String,
+    required: false,
+  })
+  public Title?: string;
+
+  @Prop({
+    type: String,
+    required: false,
+  })
+  public Author?: string;
+
+  @Prop({
+    type: Number,
+    required: false,
+  })
+  public PageCount?: number;
+
+  @Prop({
+    type: String,
+    required: false,
+  })
+  public PurchaseDateString?: string;
+
+  @Prop({
+    type: String,
+    required: false,
+  })
+  public Comment?: string;
+
+  // 画面コントロール
+  public ComponentIsbn?: string = '';
+  public ComponentTitle?: string = '';
+  public ComponentAuthor?: string = '';
+  public ComponentPageCount?: number = 0;
+  public ComponentPurchaseDateString?: string = '';
+  public ComponentComment?: string = '';
 
 // 画面制御
   public RegistButtonState: boolean = false;
@@ -101,6 +147,22 @@ export default class BookEditComponent extends Vue {
     PageCount: Rules.SimpleNumberRule,
   };
 
+  private ParentDataLoadRequired: boolean = true;
+
+  public beforeUpdate() {
+
+    if ((this.DialogMode && this.DialogMode === DialogMode.Update) && this.ParentDataLoadRequired) {
+      this.ComponentIsbn = this.Isbn;
+      this.ComponentTitle = this.Title;
+      this.ComponentAuthor = this.Author;
+      this.ComponentPageCount = this.PageCount;
+      this.ComponentPurchaseDateString = this.PurchaseDateString;
+      this.ComponentComment = this.Comment;
+      this.ParentDataLoadRequired = false;
+    }
+
+  }
+
   /**
    * OnRegistExecuteイベントのエミッタ
    */
@@ -108,30 +170,31 @@ export default class BookEditComponent extends Vue {
   public EmitRegist(): BookModel {
     const model = new BookModel();
 
-    if (this.Isbn) {
-      model.Isbn = this.Isbn;
+    if (this.ComponentIsbn) {
+      model.Isbn = this.ComponentIsbn;
     }
 
-    if (this.Title) {
-      model.Title = this.Title;
+    if (this.ComponentTitle) {
+      model.Title = this.ComponentTitle;
     }
 
-    if (this.Author) {
-      model.Author = this.Author;
+    if (this.ComponentAuthor) {
+      model.Author = this.ComponentAuthor;
     }
 
-    if (this.PageCount) {
-      model.PageCount = this.PageCount;
+    if (this.ComponentPageCount) {
+      model.PageCount = this.ComponentPageCount;
     }
 
-    if (this.PurchaseDateString) {
-      model.PurchaseDate = new Date(this.PurchaseDateString);
+    if (this.ComponentPurchaseDateString) {
+      model.PurchaseDate = new Date(this.ComponentPurchaseDateString);
     }
 
-    if (this.Comment) {
-      model.Comment = this.Comment;
+    if (this.ComponentComment) {
+      model.Comment = this.ComponentComment;
     }
 
+    this.ParentDataLoadRequired = true;
     return model;
   }
 
@@ -140,6 +203,13 @@ export default class BookEditComponent extends Vue {
    */
   @Emit('OnCloseExecute')
   public EmitClose(): void {
+    this.ComponentIsbn = '';
+    this.ComponentTitle = '';
+    this.ComponentAuthor = '';
+    this.ComponentPageCount = 0;
+    this.ComponentPurchaseDateString = '';
+    this.ComponentComment = '';
+    this.ParentDataLoadRequired = true;
     return;
   }
 
@@ -147,7 +217,7 @@ export default class BookEditComponent extends Vue {
  * ISBN検索ボタンの有効設定
  */
 private IsSearchButtonEnable(): void {
-    if ( Rules.Isbn13Rule(this.Isbn) === true) {
+    if ( this.ComponentIsbn && Rules.Isbn13Rule(this.ComponentIsbn) === true) {
       this.BookInfoButtonState = true;
     } else {
       this.BookInfoButtonState = false;
@@ -160,9 +230,12 @@ private IsSearchButtonEnable(): void {
    * ISBN番号から書誌情報を取得します。
    */
   private async GetBookInfo(): Promise<void> {
+    if (!this.ComponentIsbn) {
+      return;
+    }
 
     try {
-    const content = await Book.SearchBookInfo(this.Isbn);
+    const content = await Book.SearchBookInfo(this.ComponentIsbn);
 
     this.Title = content.title;
     this.Author = content.author;
@@ -179,6 +252,5 @@ private IsSearchButtonEnable(): void {
 
     }
   }
-
 }
 </script>
